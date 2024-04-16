@@ -1,0 +1,12 @@
+[Unit]
+Description=X735 Power Off service
+DefaultDependencies=no
+Before=umount.target
+RefuseManualStart=yes
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/x735.sh poweroff
+
+[Install]
+WantedBy=poweroff.target

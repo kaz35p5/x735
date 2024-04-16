@@ -1,0 +1,140 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835";
+
+	fragment@0 {
+		target = <&gpio>;
+		__overlay__ {
+			x735_fan_pwm_pins: x735_fan_pwm_pins {
+				brcm,pins = <13>; /* GPIO */
+				brcm,function = <4>; /* Alt0 (PWM) */
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&pwm>;
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&x735_fan_pwm_pins>;
+			status = "okay";
+		};
+	};
+
+	fragment@10 {
+		target = <&gpio>;
+		__overlay__ {
+			x735_fan_tach_pins: x735_fan_tach_pins {
+				brcm,pins = <16>; /* GPIO */
+				brcm,function = <0>; /* in */
+				brcm,pull = <2>; /* up */
+			};
+		};
+	};
+
+	fragment@2 {
+		target-path = "/";
+		__overlay__ {
+			fan: cooling_fan {
+				status = "okay";
+				compatible = "pwm-fan";
+				#cooling-cells = <2>;
+//				cooling-min-state = <0>;
+//				cooling-max-state = <3>;
+				cooling-levels = <0 75 125 175 250>;
+				pwms = <&pwm 1 41666 0>; /* 24 KHz */
+				/* tach */
+				interrupt-parent = <&gpio>;
+				interrupts = <16 2>; /* GPIO16 */
+				pulses-per-revolution = <2>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&x735_fan_tach_pins>;
+			};
+		};
+	};
+
+	fragment@3 {
+		target = <&thermal_trips>;
+		__overlay__ {
+			cpu_tepid: cpu-tepid {
+				temperature = <50000>;
+				hysteresis = <5000>;
+				type = "active";
+			};
+		
+			cpu_warm: cpu-warm {
+				temperature = <60000>;
+				hysteresis = <5000>;
+				type = "active";
+			};
+		
+			cpu_hot: cpu-hot {
+				temperature = <67500>;
+				hysteresis = <5000>;
+				type = "active";
+			};
+		
+			cpu_vhot: cpu-vhot {
+				temperature = <75000>;
+				hysteresis = <5000>;
+				type = "active";
+			};
+
+			cpu_crit: cpu-crit {
+				temperature = <110000>;
+				hysteresis = <0>;
+				type = "critical";
+			};
+		};
+	};
+
+	fragment@4 {
+		target = <&cooling_maps>;
+		__overlay__ {
+			tepid {
+				trip = <&cpu_tepid>;
+				cooling-device = <&fan 1 1>;
+			};
+		
+			warm {
+				trip = <&cpu_warm>;
+				cooling-device = <&fan 2 2>;
+			};
+		
+			hot {
+				trip = <&cpu_hot>;
+				cooling-device = <&fan 3 3>;
+			};
+		
+			vhot {
+				trip = <&cpu_vhot>;
+				cooling-device = <&fan 4 4>;
+			};
+
+			melt {
+				trip = <&cpu_crit>;
+				cooling-device = <&fan 4 4>;
+			};
+		};
+	};
+	
+	__overrides__ {
+		fan_temp0 = <&cpu_tepid>,"temperature:0";
+		fan_temp1 = <&cpu_warm>,"temperature:0";
+		fan_temp2 = <&cpu_hot>,"temperature:0";
+		fan_temp3 = <&cpu_vhot>,"temperature:0";
+		fan_temp0_hyst = <&cpu_tepid>,"hysteresis:0";
+		fan_temp1_hyst = <&cpu_warm>,"hysteresis:0";
+		fan_temp2_hyst = <&cpu_hot>,"hysteresis:0";
+		fan_temp3_hyst = <&cpu_vhot>,"hysteresis:0";
+		fan_temp0_speed = <&fan>, "cooling-levels:4";
+		fan_temp1_speed = <&fan>, "cooling-levels:8";
+		fan_temp2_speed = <&fan>, "cooling-levels:12";
+		fan_temp3_speed = <&fan>, "cooling-levels:16";
+	};
+
+};
+

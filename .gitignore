@@ -1,0 +1,8 @@
+debian/debhelper-build-stamp
+debian/files
+*.substvars
+*.debhelper
+*.debhelper.log
+.*
+*.dtbo
+modules.order
