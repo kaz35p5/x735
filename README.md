@@ -26,9 +26,21 @@ sudo cp /usr/share/x735/x735-cooling-fan.dtbo /boot/firmware/overlays/
 ```
 
 /boot/firmware/config.txt に下記を追記する。
+（GPIO13 を PWM1 にする。）
 ```
+dtoverlay=pwm,pin=13,func=4
 dtoverlay=x735-cooling-fan
 ```
+
+PWM0 を他のデバイスに使用する場合は、下記の様に pwm overlay の代わりに pwm-2chan overlay を使う。
+```
+dtoverlay=pwm,pin=13,func=4
+dtoverlay=pwm-2chan,pin=13,func=4,pin2=18,func2=2
+dtoverlay=x735-cooling-fan
+```
+
+※GPIO12は x735 で使用しているので、PWM0 として使用できるのは GPIO18 です。
+
 
 ※Linuxバージョンによっては /boot/firmware/ でなく /boot/ の場合があるので、インストールする実機を確認すること。
 

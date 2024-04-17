@@ -8,25 +8,6 @@
 	fragment@0 {
 		target = <&gpio>;
 		__overlay__ {
-			x735_fan_pwm_pins: x735_fan_pwm_pins {
-				brcm,pins = <13>; /* GPIO */
-				brcm,function = <4>; /* Alt0 (PWM) */
-			};
-		};
-	};
-
-	fragment@1 {
-		target = <&pwm>;
-		__overlay__ {
-			pinctrl-names = "default";
-			pinctrl-0 = <&x735_fan_pwm_pins>;
-			status = "okay";
-		};
-	};
-
-	fragment@10 {
-		target = <&gpio>;
-		__overlay__ {
 			x735_fan_tach_pins: x735_fan_tach_pins {
 				brcm,pins = <16>; /* GPIO */
 				brcm,function = <0>; /* in */
@@ -42,8 +23,6 @@
 				status = "okay";
 				compatible = "pwm-fan";
 				#cooling-cells = <2>;
-//				cooling-min-state = <0>;
-//				cooling-max-state = <3>;
 				cooling-levels = <0 75 125 175 250>;
 				pwms = <&pwm 1 41666 0>; /* 24 KHz */
 				/* tach */
