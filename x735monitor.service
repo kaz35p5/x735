@@ -1,6 +1,7 @@
 [Unit]
 Description=X735 monitor service
 After=network.target
+ConditionFileIsExecutable=/usr/bin/gpioset
 
 [Service]
 Type=simple

@@ -38,11 +38,8 @@ do_reboot() {
 }
 
 do_monitor() {
-	# 入力設定
-	pinctrl set $SHUTDOWN ip pd
-
 	# 出力設定
-	pinctrl set $BOOT op dh
+	gpioset `gpiofind $BOOT`=1
 
 	shutdown=`gpiofind $SHUTDOWN`
 

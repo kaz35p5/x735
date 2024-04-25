@@ -14,5 +14,6 @@ Package: x735
 Architecture: all
 Depends:
  ${misc:Depends},
+ gpiod,
 Description: X735 Control Program
  X735 Power Management board control program

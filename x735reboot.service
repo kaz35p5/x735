@@ -3,6 +3,7 @@ Description=X735 Reboot service
 DefaultDependencies=no
 Before=umount.target
 RefuseManualStart=yes
+ConditionFileIsExecutable=/usr/bin/gpioset
 
 [Service]
 Type=oneshot
